@@ -1,21 +1,7 @@
----
-jupyter:
-  colab:
-  kernelspec:
-    display_name: Python 3
-    name: python3
-  language_info:
-    name: python
-  nbformat: 4
-  nbformat_minor: 0
----
-
-::: {.cell .code execution_count="17" colab="{\"base_uri\":\"https://localhost:8080/\"}" id="g7w8F738RG_7" outputId="4eefcabe-bdfe-446c-a8bd-1d68a7647535"}
-``` python
+```python
 !pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 ```
 
-::: {.output .stream .stdout}
     Looking in indexes: https://download.pytorch.org/whl/cu118
     Requirement already satisfied: torch in /usr/local/lib/python3.11/dist-packages (2.6.0+cu118)
     Requirement already satisfied: torchvision in /usr/local/lib/python3.11/dist-packages (0.21.0+cu124)
@@ -42,21 +28,17 @@ jupyter:
     Requirement already satisfied: numpy in /usr/local/lib/python3.11/dist-packages (from torchvision) (2.0.2)
     Requirement already satisfied: pillow!=8.3.*,>=5.3.0 in /usr/local/lib/python3.11/dist-packages (from torchvision) (11.2.1)
     Requirement already satisfied: MarkupSafe>=2.0 in /usr/local/lib/python3.11/dist-packages (from jinja2->torch) (3.0.2)
-:::
-:::
+    
 
-::: {.cell .code execution_count="18" id="0pLu7vweVnA3"}
-``` python
+
+```python
 import torch as t
 ```
-:::
 
-::: {.cell .markdown id="F6ZlDVQPUkjK"}
-## 1.1 Создание тензоров {#11-создание-тензоров}
-:::
+## 1.1 Создание тензоров
 
-::: {.cell .code execution_count="19" colab="{\"base_uri\":\"https://localhost:8080/\"}" id="QQR49ERgTsgS" outputId="e3a1b2ce-a2b5-415f-8153-4ded1b691f25"}
-``` python
+
+```python
 # - Тензор размером 3x4, заполненный случайными числами от 0 до 1
 tensor3x4 = t.randint(2, (3, 4))
 print('tensor3x4\n', tensor3x4)
@@ -71,7 +53,6 @@ tensor4x4 = t.randint(16, (2, 8)).reshape(4, 4)
 print('tensor4x4\n', tensor4x4)
 ```
 
-::: {.output .stream .stdout}
     tensor3x4
      tensor([[1, 0, 1, 0],
             [1, 0, 1, 0],
@@ -80,7 +61,7 @@ print('tensor4x4\n', tensor4x4)
      tensor([[[0., 0., 0., 0.],
              [0., 0., 0., 0.],
              [0., 0., 0., 0.]],
-
+    
             [[0., 0., 0., 0.],
              [0., 0., 0., 0.],
              [0., 0., 0., 0.]]])
@@ -95,15 +76,12 @@ print('tensor4x4\n', tensor4x4)
             [10,  6, 10,  2],
             [ 8,  9, 13, 12],
             [14, 14, 13,  7]])
-:::
-:::
+    
 
-::: {.cell .markdown id="0Qa2lKnuW6LF"}
-## 1.2 Операции с тензорами {#12-операции-с-тензорами}
-:::
+## 1.2 Операции с тензорами
 
-::: {.cell .code execution_count="20" colab="{\"base_uri\":\"https://localhost:8080/\"}" id="V2l0NyW1W8B8" outputId="04cfe227-189b-4dff-c1a2-73922856938e"}
-``` python
+
+```python
 A = t.randint(11, (3, 4))
 B = t.randint(11, (4, 3))
 print('A\n', A)
@@ -122,7 +100,6 @@ sum_A = A.sum()
 print('sum_A\n', sum_A)
 ```
 
-::: {.output .stream .stdout}
     A
      tensor([[1, 4, 0, 4],
             [8, 6, 2, 1],
@@ -147,15 +124,12 @@ print('sum_A\n', sum_A)
             [ 7, 90, 24,  8]])
     sum_A
      tensor(50)
-:::
-:::
+    
 
-::: {.cell .markdown id="irw67nKKYhQE"}
-## 1.3 Индексация и срезы {#13-индексация-и-срезы}
-:::
+## 1.3 Индексация и срезы
 
-::: {.cell .code execution_count="21" colab="{\"base_uri\":\"https://localhost:8080/\"}" id="CRcu1Y2hYmqy" outputId="65c45033-53f9-469b-db43-53c367644dfc"}
-``` python
+
+```python
 tensor5x5x5 = t.randint(11, (5, 5, 5))
 print('tensor5x5x5\n', tensor5x5x5)
 # - Первую строку
@@ -172,32 +146,31 @@ even_elements = tensor5x5x5[::2, ::2, ::2]
 print('even_elements\n', even_elements)
 ```
 
-::: {.output .stream .stdout}
     tensor5x5x5
      tensor([[[ 6,  9,  4,  8,  4],
              [ 0,  3,  9,  9,  9],
              [ 7,  6,  0,  9,  6],
              [ 2,  7,  0,  5,  9],
              [ 1,  0,  4,  9,  0]],
-
+    
             [[ 2,  8, 10,  8,  5],
              [ 0,  2,  6,  3,  3],
              [ 9,  5,  7,  3,  2],
              [ 5,  6,  4,  5,  6],
              [ 2,  8,  9,  5,  0]],
-
+    
             [[ 1,  7,  2,  3,  9],
              [ 7, 10,  9,  2,  3],
              [ 9,  2,  9,  7,  4],
              [ 1,  8,  6,  4,  6],
              [ 3,  9,  2,  3,  7]],
-
+    
             [[ 6,  8,  1,  0,  2],
              [ 0,  9,  9,  7,  4],
              [ 7,  5,  1,  0,  1],
              [ 0,  9, 10,  3,  7],
              [ 4,  6,  1,  3,  3]],
-
+    
             [[ 0,  5,  0,  4,  5],
              [ 7,  7,  9,  7,  8],
              [ 9, 10, 10,  7,  7],
@@ -218,23 +191,20 @@ print('even_elements\n', even_elements)
      tensor([[[ 6,  4,  4],
              [ 7,  0,  6],
              [ 1,  4,  0]],
-
+    
             [[ 1,  2,  9],
              [ 9,  9,  4],
              [ 3,  2,  7]],
-
+    
             [[ 0,  0,  5],
              [ 9, 10,  7],
              [ 8,  6,  5]]])
-:::
-:::
+    
 
-::: {.cell .markdown id="6ItPuwwlZbI7"}
-## 1.4 Работа с формами {#14-работа-с-формами}
-:::
+## 1.4 Работа с формами
 
-::: {.cell .code execution_count="22" colab="{\"base_uri\":\"https://localhost:8080/\"}" id="bEeKcz1WZcDp" outputId="9b615f12-de4b-429f-93d8-5bf99434f63f"}
-``` python
+
+```python
 # Создайте тензор размером 24 элемента
 tensor1x24 = t.randint(11, (24, ))
 print('tensor1x24\n', tensor1x24)
@@ -256,7 +226,6 @@ tensor2x2x2x3 = tensor1x24.reshape(2, 2, 2, 3)
 print('tensor2x2x2x3\n', tensor2x2x2x3)
 ```
 
-::: {.output .stream .stdout}
     tensor1x24
      tensor([ 7,  5,  3,  8, 10,  1,  3,  4,  8,  3, 10,  7, 10,  9, 10,  6,  3,  8,
             10,  4,  1, 10,  2, 10])
@@ -276,22 +245,21 @@ print('tensor2x2x2x3\n', tensor2x2x2x3)
      tensor([[[ 7,  5,  3,  8],
              [10,  1,  3,  4],
              [ 8,  3, 10,  7]],
-
+    
             [[10,  9, 10,  6],
              [ 3,  8, 10,  4],
              [ 1, 10,  2, 10]]])
     tensor2x2x2x3
      tensor([[[[ 7,  5,  3],
               [ 8, 10,  1]],
-
+    
              [[ 3,  4,  8],
               [ 3, 10,  7]]],
-
-
+    
+    
             [[[10,  9, 10],
               [ 6,  3,  8]],
-
+    
              [[10,  4,  1],
               [10,  2, 10]]]])
-:::
-:::
+    
