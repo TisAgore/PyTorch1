@@ -7,8 +7,6 @@ Original file is located at
     https://colab.research.google.com/drive/1z0MucGEDXKYXnYBR7C7zeaZY4nn2QoPF
 """
 
-!pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
-
 import torch as t
 import math
 
