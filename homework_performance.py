@@ -7,8 +7,6 @@ Original file is located at
     https://colab.research.google.com/drive/1xHSfmDZlQywczFMrJ8mjVR6apN01Dcp5
 """
 
-!pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
-
 import torch as t
 import time
 
@@ -41,7 +39,7 @@ def execute_operations(*tensors):
         'matmul': t.matmul,
         'add': t.add,
         'mul': t.mul,
-        'transpose': t.transpose(0, 1),
+        'transpose': t.transpose,
         'sum': t.sum
     }
     operation_names = ['matmul', 'add', 'mul', 'transpose', 'sum']
@@ -62,8 +60,13 @@ def execute_operations(*tensors):
         if operation_name == 'transpose':
           transp_tensors = list()
           for tensor in tensors_cuda:
-            transp_tensors.append(operations[operation_name](tensor))
+            transp_tensors.append(operations[operation_name](tensor, 0, 1))
           result = transp_tensors
+        elif operation_name == 'sum':
+          sum_tensors = list()
+          for tensor in tensors_cuda:
+            sum_tensors.append(operations[operation_name](tensor))
+          result = sum_tensors
         else:
          result_cudo = operations[operation_name](*tensors_cuda)
         end_event.record()
@@ -78,8 +81,13 @@ def execute_operations(*tensors):
       if operation_name == 'transpose':
         transp_tensors = list()
         for tensor in tensors_cpu:
-          transp_tensors.append(operations[operation_name](tensor))
+          transp_tensors.append(operations[operation_name](tensor, 0, 1))
         result = transp_tensors
+      elif operation_name == 'sum':
+        sum_tensors = list()
+        for tensor in tensors_cpu:
+          sum_tensors.append(operations[operation_name](tensor))
+        result = sum_tensors
       else:
         result = operations[operation_name](*tensors_cpu)
       elapsed_time = time.time() - start_time
@@ -116,8 +124,92 @@ sum_cpu = cpu[4]
 # 3. Вычислите ускорение (speedup)
 # 4. Выведите результаты в табличном виде
 print(f"Операция                        | CPU (мс) | GPU (мс) | Ускорение (раз)")
-print(f"Матричное умножение             |   {matmul_cpu:.2f}   |   {matmul_cuda:.2f}   |     {matmul_cpu/matmul_cuda:.2f}")
-print(f"Поэлементное сложение           |   {add_cpu:.2f}   |   {add_cuda:.2f}   |     {add_cpu/add_cuda:.2f}")
-print(f"Поэлементное умножение          |   {mul_cpu:.2f}   |   {mul_cuda:.2f}   |     {mul_cpu/mul_cuda:.2f}")
-print(f"Транспонирование                |   {transpose_cpu:.2f}   |   {transpose_cuda:.2f}   |     {transpose_cpu/transpose_cuda:.2f}")
-print(f"Вычисление суммы всех элементов |   {sum_cpu:.2f}   |   {sum_cuda:.2f}   |     {sum_cpu/sum_cuda:.2f}")
+print(f"Матричное умножение             |   {matmul_cpu:.4f}   |   {matmul_cuda:.4f}   |     {1/(matmul_cuda/matmul_cpu):.4f}")
+print(f"Поэлементное сложение           |   {add_cpu:.4f}   |   {add_cuda:.4f}   |     {1/(add_cuda/add_cpu):.4f}")
+print(f"Поэлементное умножение          |   {mul_cpu:.4f}   |   {mul_cuda:.4f}   |     {1/(mul_cuda/mul_cpu):.4f}")
+print(f"Транспонирование                |   {transpose_cpu:.4f}   |   {transpose_cuda:.4f}   |     {1/(transpose_cuda/transpose_cpu):.4f}")
+print(f"Вычисление суммы всех элементов |   {sum_cpu:.4f}   |   {sum_cuda:.4f}   |     {1/(sum_cuda/sum_cpu):.4f}")
+
+# Сравните время выполнения следующих операций на CPU и CUDA:
+# - Матричное умножение (torch.matmul)
+# - Поэлементное сложение
+# - Поэлементное умножение
+# - Транспонирование
+# - Вычисление суммы всех элементов
+
+# Для каждой операции:
+# 1. Измерьте время на CPU
+# 2. Измерьте время на GPU (если доступен)
+cuda, cpu = execute_operations(tensor128x512x512, tensor128x512x512)
+
+matmul_cuda = cuda[0]
+add_cuda = cuda[1]
+mul_cuda = cuda[2]
+transpose_cuda = cuda[3]
+sum_cuda = cuda[4]
+
+matmul_cpu = cpu[0]
+add_cpu = cpu[1]
+mul_cpu = cpu[2]
+transpose_cpu = cpu[3]
+sum_cpu = cpu[4]
+
+# 3. Вычислите ускорение (speedup)
+# 4. Выведите результаты в табличном виде
+print(f"Операция                        | CPU (мс) | GPU (мс) | Ускорение (раз)")
+print(f"Матричное умножение             |   {matmul_cpu:.4f}   |   {matmul_cuda:.4f}   |     {1/(matmul_cuda/matmul_cpu):.4f}")
+print(f"Поэлементное сложение           |   {add_cpu:.4f}   |   {add_cuda:.4f}   |     {1/(add_cuda/add_cpu):.4f}")
+print(f"Поэлементное умножение          |   {mul_cpu:.4f}   |   {mul_cuda:.4f}   |     {1/(mul_cuda/mul_cpu):.4f}")
+print(f"Транспонирование                |   {transpose_cpu:.4f}   |   {transpose_cuda:.4f}   |     {1/(transpose_cuda/transpose_cpu):.4f}")
+print(f"Вычисление суммы всех элементов |   {sum_cpu:.4f}   |   {sum_cuda:.4f}   |     {1/(sum_cuda/sum_cpu):.4f}")
+
+# Сравните время выполнения следующих операций на CPU и CUDA:
+# - Матричное умножение (torch.matmul)
+# - Поэлементное сложение
+# - Поэлементное умножение
+# - Транспонирование
+# - Вычисление суммы всех элементов
+
+# Для каждой операции:
+# 1. Измерьте время на CPU
+# 2. Измерьте время на GPU (если доступен)
+cuda, cpu = execute_operations(tensor256x256x256, tensor256x256x256)
+
+matmul_cuda = cuda[0]
+add_cuda = cuda[1]
+mul_cuda = cuda[2]
+transpose_cuda = cuda[3]
+sum_cuda = cuda[4]
+
+matmul_cpu = cpu[0]
+add_cpu = cpu[1]
+mul_cpu = cpu[2]
+transpose_cpu = cpu[3]
+sum_cpu = cpu[4]
+
+# 3. Вычислите ускорение (speedup)
+# 4. Выведите результаты в табличном виде
+print(f"Операция                        | CPU (мс) | GPU (мс) | Ускорение (раз)")
+print(f"Матричное умножение             |   {matmul_cpu:.4f}   |   {matmul_cuda:.4f}   |     {1/(matmul_cuda/matmul_cpu):.4f}")
+print(f"Поэлементное сложение           |   {add_cpu:.4f}   |   {add_cuda:.4f}   |     {1/(add_cuda/add_cpu):.4f}")
+print(f"Поэлементное умножение          |   {mul_cpu:.4f}   |   {mul_cuda:.4f}   |     {1/(mul_cuda/mul_cpu):.4f}")
+print(f"Транспонирование                |   {transpose_cpu:.4f}   |   {transpose_cuda:.4f}   |     {1/(transpose_cuda/transpose_cpu):.4f}")
+print(f"Вычисление суммы всех элементов |   {sum_cpu:.4f}   |   {sum_cuda:.4f}   |     {1/(sum_cuda/sum_cpu):.4f}")
+
+"""## 3.4 Анализ результатов
+
+### Проанализируйте результаты:
+### - Какие операции получают наибольшее ускорение на GPU?
+Поэлементное умножение — ускорение в ~30 раз.
+Транспонирвоание — ускорение >100 раз.
+Поэлементное сложение — ускорение в ~30 раз.
+Эти операции хорошо распараллеливаются, так как состоят из большого количества независимых простых вычислений, которые GPU выполняет параллельно.
+### - Почему некоторые операции могут быть медленнее на GPU?
+Для очень быстрых операций на CPU накладные расходы на передачу данных и запуск вычислений на GPU могут превышать выигрыш.
+Малые размеры данных не дают GPU раскрыть весь потенциал параллелизма.
+### - Как размер матриц влияет на ускорение?
+Чем больше размер матриц, тем эффективнее GPU использует параллелизм и тем выше ускорение.
+### - Что происходит при передаче данных между CPU и GPU?
+Если вы вызываете операцию на GPU, а данные хранятся на CPU, PyTorch автоматически копирует их на видеокарту, что занимает дополнительное время.
+Передача данных между оперативной памятью (CPU) и видеопамятью (GPU) осуществляется через шину PCI Express и является относительно медленной операцией по сравнению с вычислениями внутри самого GPU.
+"""
