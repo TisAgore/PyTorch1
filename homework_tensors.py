@@ -7,12 +7,6 @@ Original file is located at
     https://colab.research.google.com/drive/1lKH5jsdXgCnzsdS2rb-_OCY3Eyq5D-BG
 """
 
-!python -m venv UrFan
-
-!.\UrFan\Scripts\activate
-
-!pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
-
 import torch as t
 import math
 
